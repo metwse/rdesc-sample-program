@@ -1,0 +1,10 @@
+.cache/
+*.o
+*.d
+*.gcda
+*.gcno
+compile_commands.json
+vendor/
+rdesc
+balg
+balg-tests
