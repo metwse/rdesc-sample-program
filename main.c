@@ -7,6 +7,7 @@
 #include "rdesc/grammar.h"
 #include "rdesc/util.h"
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -62,29 +63,32 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 		}
 
 	case NT_IF_EXPR:
+		rdesc_flip_left(p, n, 0);  /** flip or expr */
+
+		return ralt_idx(rchild(p, n, 1)) == 0 ?
+			!interpret(p, rchild(p, n, 0)) || interpret(p, rchild(p, n, 1)) :
+			interpret(p, rchild(p, n, 0));
+
+	case NT_IF_EXPR_REST:
 		switch (ralt_idx(n)) {
 		case 0:
-			rdesc_flip_left(p, n, 2);  /** flip or expr */
+			rdesc_flip_left(p, n, 1);  /** flip or expr */
 
-			return !interpret(p, rchild(p, n, 0)) || interpret(p, rchild(p, n, 2));
+			return ralt_idx(rchild(p, n, 2)) == 0 ?
+				!interpret(p, rchild(p, n, 1)) || interpret(p, rchild(p, n, 2)) :
+				interpret(p, rchild(p, n, 1));
 		default:
-			rdesc_flip_left(p, n, 0);  /** flip or expr */
-
-			return interpret(p, rchild(p, n, 0));
+			assert(0 && "unreachable");
 		}
 
 	case NT_IFF_EXPR:
 		switch (ralt_idx(n)) {
 		case 0: {
-			rdesc_flip_left(p, n, 2);  /** flip if expr */
-
 			bool a = interpret(p, rchild(p, n, 0));
 			bool b = interpret(p, rchild(p, n, 2));
 
 			return (a && b) || (!a && !b);
 		} default:
-			rdesc_flip_left(p, n, 0);  /** flip if expr */
-
 			return interpret(p, rchild(p, n, 0));
 		}
 	}
