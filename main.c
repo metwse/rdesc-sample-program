@@ -22,7 +22,7 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 		return interpret(p, rchild(p, n, 0));
 
 	case NT_ATOM:
-		switch (ralt_id(n)) {
+		switch (ralt_idx(n)) {
 		case 0:
 			rdesc_flip_left(p, n, 1);  /** flip iff expr */
 
@@ -34,7 +34,7 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 		}
 
 	case NT_NEG_EXPR:
-		switch (ralt_id(n)) {
+		switch (ralt_idx(n)) {
 		case 0:
 			return !interpret(p, rchild(p, n, 1));
 		default:
@@ -42,7 +42,7 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 		}
 
 	case NT_AND_EXPR:
-		switch (ralt_id(n)) {
+		switch (ralt_idx(n)) {
 		case 0:
 			return interpret(p, rchild(p, n, 0)) && interpret(p, rchild(p, n, 2));
 		default:
@@ -50,7 +50,7 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 		}
 
 	case NT_OR_EXPR:
-		switch (ralt_id(n)) {
+		switch (ralt_idx(n)) {
 		case 0:
 			rdesc_flip_left(p, n, 2);  /** flip and expr */
 
@@ -62,7 +62,7 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 		}
 
 	case NT_IF_EXPR:
-		switch (ralt_id(n)) {
+		switch (ralt_idx(n)) {
 		case 0:
 			rdesc_flip_left(p, n, 2);  /** flip or expr */
 
@@ -74,7 +74,7 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 		}
 
 	case NT_IFF_EXPR:
-		switch (ralt_id(n)) {
+		switch (ralt_idx(n)) {
 		case 0: {
 			rdesc_flip_left(p, n, 2);  /** flip if expr */
 

@@ -8,7 +8,7 @@
 #define MAX_ALTERNATIVE_COUNT 3
 #define MAX_ALTERNATIVE_SIZE 3
 
-#define TOKEN_COUNT 11
+#define TOKEN_COUNT 10
 
 
 enum nt {
@@ -23,9 +23,7 @@ enum nt {
 };
 
 enum tk {
-	/* ID 0 is reserved in rdesc, tokens start from 1 */
-	TK_NOTOKEN,
-	TK_TRUE = 1, TK_FALSE,
+	TK_TRUE, TK_FALSE,
 	TK_NEG, TK_AND, TK_OR, TK_IF, TK_IFF,
 
 	TK_LPAREN, TK_RPAREN,

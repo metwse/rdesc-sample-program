@@ -36,7 +36,6 @@ struct rdesc_grammar_symbol grammar_def[PRODUCTION_COUNT]
 };
 
 const char *tk_names[] = {
-	"\0",
 	"true", "false",
 	"¬", "∧", "∨", "→", "↔",
 	"(", ")",

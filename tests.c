@@ -30,7 +30,7 @@ int main(void)
 	struct lex lex;
 	uint16_t lex_out;
 
-	lex_init(&lex, tk_names, 11);
+	lex_init(&lex, tk_names, TOKEN_COUNT);
 
 	for (int i = 0; i < 10; i++) {
 		assert(lex_pump(&lex, 't', NULL) == LEX_CONTINUE);

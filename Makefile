@@ -3,7 +3,9 @@ MODE ?= release
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 
+# All files except for the one containing executable main function.
 NONMAIN_OBJS = $(filter-out main.o,$(OBJS))
+# All files except for the one containing test executable main function.
 NONTEST_OBJS = $(filter-out tests.o,$(OBJS))
 
 
@@ -19,19 +21,22 @@ default: balg
 
 RDESC_DIR := vendor/rdesc
 RDESC_FEATURES := full
-RDESC_MODE := debug
+RDESC_MODE := $(MODE)
 
 $(RDESC_DIR)/rdesc.mk:
-	git clone https://github.com/metwse/rdesc.git $(RDESC_DIR)
+	git clone https://github.com/metwse/rdesc.git $(RDESC_DIR) \
+		--branch v0.2.0
 
 include $(RDESC_DIR)/rdesc.mk
 
-# rdesc public headers
+# Link librdesc public headers folder to rdesc/, so we can access them via
+# `#include "rdesc/..."` instead of `#include "vendor/rdesc/include/..."`
 rdesc: $(RDESC)
-	ln -s $(RDESC_INCLUDE_DIR) rdesc
+	ln -s $(RDESC_INCLUDE_DIR) $@
 
 
-%.o: %.c rdesc $(RDESC)
+# Source files depend on public headers.
+%.o: %.c rdesc
 	$(CC) $(CFLAGS) -c $<
 
 balg: $(NONTEST_OBJS) $(RDESC)
