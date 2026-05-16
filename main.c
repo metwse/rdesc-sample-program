@@ -14,20 +14,20 @@
 #include <stdlib.h>
 
 
-bool interpret(struct rdesc *p, struct rdesc_node *n)
+bool interpret(struct rdesc_node n)
 {
 	switch (rid(n)) {
 	case NT_EXPR:
-		rdesc_flip_left(p, n, 0);  /** flip iff expr */
+		rdesc_flip_left(n, 0);  /** flip iff expr */
 
-		return interpret(p, rchild(p, n, 0));
+		return interpret(rchild(n, 0));
 
 	case NT_ATOM:
 		switch (ralt_idx(n)) {
 		case 0:
-			rdesc_flip_left(p, n, 1);  /** flip iff expr */
+			rdesc_flip_left(n, 1);  /** flip iff expr */
 
-			return interpret(p, rchild(p, n, 1));
+			return interpret(rchild(n, 1));
 		case 1:
 			return true;
 		default:
@@ -37,46 +37,46 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 	case NT_NEG_EXPR:
 		switch (ralt_idx(n)) {
 		case 0:
-			return !interpret(p, rchild(p, n, 1));
+			return !interpret(rchild(n, 1));
 		default:
-			return interpret(p, rchild(p, n, 0));
+			return interpret(rchild(n, 0));
 		}
 
 	case NT_AND_EXPR:
 		switch (ralt_idx(n)) {
 		case 0:
-			return interpret(p, rchild(p, n, 0)) && interpret(p, rchild(p, n, 2));
+			return interpret(rchild(n, 0)) && interpret(rchild(n, 2));
 		default:
-			return interpret(p, rchild(p, n, 0));
+			return interpret(rchild(n, 0));
 		}
 
 	case NT_OR_EXPR:
 		switch (ralt_idx(n)) {
 		case 0:
-			rdesc_flip_left(p, n, 2);  /** flip and expr */
+			rdesc_flip_left(n, 2);  /** flip and expr */
 
-			return interpret(p, rchild(p, n, 0)) || interpret(p, rchild(p, n, 2));
+			return interpret(rchild(n, 0)) || interpret(rchild(n, 2));
 		default:
-			rdesc_flip_left(p, n, 0);  /** flip and expr */
+			rdesc_flip_left(n, 0);  /** flip and expr */
 
-			return interpret(p, rchild(p, n, 0));
+			return interpret(rchild(n, 0));
 		}
 
 	case NT_IF_EXPR:
-		rdesc_flip_left(p, n, 0);  /** flip or expr */
+		rdesc_flip_left(n, 0);  /** flip or expr */
 
-		return ralt_idx(rchild(p, n, 1)) == 0 ?
-			!interpret(p, rchild(p, n, 0)) || interpret(p, rchild(p, n, 1)) :
-			interpret(p, rchild(p, n, 0));
+		return ralt_idx(rchild(n, 1)) == 0 ?
+			!interpret(rchild(n, 0)) || interpret(rchild(n, 1)) :
+			interpret(rchild(n, 0));
 
 	case NT_IF_EXPR_REST:
 		switch (ralt_idx(n)) {
 		case 0:
-			rdesc_flip_left(p, n, 1);  /** flip or expr */
+			rdesc_flip_left(n, 1);  /** flip or expr */
 
-			return ralt_idx(rchild(p, n, 2)) == 0 ?
-				!interpret(p, rchild(p, n, 1)) || interpret(p, rchild(p, n, 2)) :
-				interpret(p, rchild(p, n, 1));
+			return ralt_idx(rchild(n, 2)) == 0 ?
+				!interpret(rchild(n, 1)) || interpret(rchild(n, 2)) :
+				interpret(rchild(n, 1));
 		default:
 			assert(0 && "unreachable");
 		}
@@ -84,12 +84,12 @@ bool interpret(struct rdesc *p, struct rdesc_node *n)
 	case NT_IFF_EXPR:
 		switch (ralt_idx(n)) {
 		case 0: {
-			bool a = interpret(p, rchild(p, n, 0));
-			bool b = interpret(p, rchild(p, n, 2));
+			bool a = interpret(rchild(n, 0));
+			bool b = interpret(rchild(n, 2));
 
 			return (a && b) || (!a && !b);
 		} default:
-			return interpret(p, rchild(p, n, 0));
+			return interpret(rchild(n, 0));
 		}
 	}
 
@@ -139,7 +139,7 @@ void program(struct rdesc *p)
 			continue;
 
 		case RDESC_READY:
-			printf("(%s)\n", interpret(p, rdesc_root(p))
+			printf("(%s)\n", interpret(rdesc_get_root(p))
 					  ? "true" : "false");
 			unwrap(rdesc_start(p, NT_EXPR));
 

@@ -25,7 +25,7 @@ RDESC_MODE := $(MODE)
 
 $(RDESC_DIR)/rdesc.mk:
 	git clone https://github.com/metwse/rdesc.git $(RDESC_DIR) \
-		--branch v0.2.0
+		--branch v0.3.0-preview
 
 include $(RDESC_DIR)/rdesc.mk
 
