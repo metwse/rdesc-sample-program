@@ -16,7 +16,7 @@ int main(void)
 	struct rdesc_grammar grammar;
 
 	unwrap(rdesc_grammar_init(&grammar,
-			   PRODUCTION_COUNT,
+			   NONTERMINAL_COUNT,
 			   MAX_ALTERNATIVE_COUNT,
 			   MAX_ALTERNATIVE_SIZE,
 			   (const struct rdesc_grammar_symbol *) grammar_def));

@@ -4,7 +4,7 @@
 #include "rdesc/grammar.h"
 
 
-#define PRODUCTION_COUNT 11
+#define NONTERMINAL_COUNT 11
 #define MAX_ALTERNATIVE_COUNT 3
 #define MAX_ALTERNATIVE_SIZE 3
 
@@ -35,7 +35,7 @@ extern const char *tk_names[];
 extern const char *nt_names[];
 
 /* +1s in alternative count and body length are for sentinels */
-extern struct rdesc_grammar_symbol grammar_def[PRODUCTION_COUNT]
+extern struct rdesc_grammar_symbol grammar_def[NONTERMINAL_COUNT]
 					      [MAX_ALTERNATIVE_COUNT + 1]
 					      [MAX_ALTERNATIVE_SIZE + 1];
 

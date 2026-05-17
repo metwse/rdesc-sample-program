@@ -4,7 +4,7 @@
 #include "rdesc/rule_macros.h"
 
 
-struct rdesc_grammar_symbol grammar_def[PRODUCTION_COUNT]
+struct rdesc_grammar_symbol grammar_def[NONTERMINAL_COUNT]
 				       [MAX_ALTERNATIVE_COUNT + 1]
 				       [MAX_ALTERNATIVE_SIZE + 1] = {
 	/* <expr> ::= */ r(
